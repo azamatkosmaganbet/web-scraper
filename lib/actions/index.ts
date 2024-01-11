@@ -40,8 +40,6 @@ export async function scrapeAndStoreProduct(productUrl: string) {
       product,
       { upsert: true, new: true }
     );
-    console.log(newProduct);
-    
 
     revalidatePath(`/products/${newProduct._id}`);
   } catch (error: any) {
@@ -72,6 +70,24 @@ export async function getAllProducts() {
     const products = await Product.find();
 
     return products;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getSimilarProducts(productId: string) {
+  try {
+    connectToDB();
+
+    const currentProduct = await Product.findById(productId);
+
+    if(!currentProduct) return null;
+
+    const similarProducts = await Product.find({
+      _id: { $ne: productId },
+    }).limit(3);
+
+    return similarProducts;
   } catch (error) {
     console.log(error);
   }

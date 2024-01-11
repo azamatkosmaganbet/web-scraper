@@ -39,6 +39,21 @@ export async function scrapeTechnodomProduct(url: string) {
     });
 
     const description = extractDescription($);
+    const categoryText = $(".breadcrumbs ul li.mobile-breadcrumb").text().trim();
+
+    const categories = categoryText.split("\n").map((item) => item.trim()).filter((item) => item !== '');
+    console.log(categories);
+    
+    let category;
+    // Проверка наличия достаточного количества категорий
+    if (categories.length >= 3) {
+      // Выбор третьей категории (индекс 2, так как индексация начинается с 0)
+      category = categories[2];
+      console.log(category);
+      
+    } else {
+      console.log("Недостаточно категорий для выбора третьей");
+    }
     const stars1 = $(
       "#add-comment div.product__reviews-block-overall-rating-wrapper div.product__reviews-block-overall-rating-value"
     )
@@ -60,15 +75,15 @@ export async function scrapeTechnodomProduct(url: string) {
       originalPrice: Number(originalPrice) || Number(currentPrice),
       priceHistory: [],
       discountRate: Number(originalPrice) - Number(currentPrice),
-      category: "category",
+      category: category,
       reviewsCount: reviewsCount,
       stars: Number(stars1),
       lowestPrice: Number(currentPrice) || Number(originalPrice),
       highestPrice: Number(originalPrice) || Number(currentPrice),
       averagePrice: Number(currentPrice) || Number(originalPrice),
     };
-    console.log(data);
-    
+
+
     return data;
   } catch (e: any) {
     console.log(e);

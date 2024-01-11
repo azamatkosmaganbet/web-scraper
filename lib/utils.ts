@@ -50,7 +50,7 @@ export function extractDescription($: any) {
       const textContent = elements
         .map((_: any, element: any) => $(element).text().trim())
         .get()
-        .join("/n");
+        .join("\n"); 
       return textContent;
     }
   }
